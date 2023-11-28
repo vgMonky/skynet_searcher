@@ -16,6 +16,11 @@ h1{
     font-size: 5rem;
     font-weight: 600;
 }
+.btnFlex{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
 
 .cGreen{
     color: green;
@@ -23,9 +28,29 @@ h1{
 .cOrange{
     color: orange;
 }
-.cWhite,
-.cWhite:hover{
-    color:whitesmoke
+.btnOrange,
+.btnOrange:visited{
+    color:whitesmoke;
+    background-color: orange;
+    border: none;
+}
+.btnOrange:hover,
+.btnOrange:focus{
+    color:black;
+    background-color: orange;
+    opacity: .9;
+}
+.btnGreen,
+.btnGreen:visited{
+    color:whitesmoke;
+    background-color: green;
+    border: none;
+}
+.btnGreen:hover,
+.btnGreen:focus{
+    color:black;
+    background-color: green;
+    opacity: .9;
 }
 
 
@@ -34,19 +59,21 @@ h1{
 
 
 
-/*  HERO SECTION  */
+/*  Select Models SECTION  */
+
 .models{
+    max-width: 500px;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 30px;
 }
-.selectModels{
+.modelsTitle{
     text-align: center;
 }
 
 @media screen and (max-width: 992px) {
-    .selectModels{
+    .modelsTitle{
         display: none;
     }
     .models{
@@ -54,11 +81,26 @@ h1{
     }
 }
 
+.model{
+    height: 150px;
+    width: 150px;
+    position: relative;
+}
+.modelText{
+    height: 150px;
+    width: 150px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 .modelImg{
     height: 150px;
-    width: auto;
-    object-fit: cover;
-    opacity: 0.7;
+    width: 150px;
+    object-fit: contain;
+    opacity: 0.5;
+    position: absolute;
+    z-index: -1;
+
 }
 
 
