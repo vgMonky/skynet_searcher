@@ -4,11 +4,18 @@
 
 /*  Variables  */
 
+:root {
+    --Black: black;
+    --White: whitesmoke;
+    --Orange: orange;
+    --Green: rgb(21, 173, 21);
+}
+
 
 /*  GENERAL STYLE  */
 body{
-    background-color: black;
-    color: whitesmoke;
+    background-color: var(--Black);
+    color: var(--White);
     font-family: 'IBM Plex Mono', monospace;
 }
 
@@ -23,33 +30,33 @@ h1{
 }
 
 .cGreen{
-    color: green;
+    color: var(--Green);
 }
 .cOrange{
-    color: orange;
+    color: var(--Orange);
 }
 .btnOrange,
 .btnOrange:visited{
-    color:whitesmoke;
-    background-color: orange;
+    color:var(--White);
+    background-color: var(--Orange);
     border: none;
 }
 .btnOrange:hover,
 .btnOrange:focus{
-    color:black;
-    background-color: orange;
+    color:var(--Black);
+    background-color: var(--Orange);
     opacity: .9;
 }
 .btnGreen,
 .btnGreen:visited{
-    color:whitesmoke;
-    background-color: green;
+    color:var(--White);
+    background-color: var(--Green);
     border: none;
 }
 .btnGreen:hover,
 .btnGreen:focus{
-    color:black;
-    background-color: green;
+    color:var(--Black);
+    background-color: var(--Green);
     opacity: .9;
 }
 
