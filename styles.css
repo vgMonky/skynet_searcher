@@ -1,0 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@200;400;600&display=swap');
+
+
+
+/*  Variables  */
+
+
+/*  GENERAL STYLE  */
+body{
+    background-color: black;
+    color: whitesmoke;
+    font-family: 'IBM Plex Mono', monospace;
+}
+
+h1{
+    font-size: 5rem;
+    font-weight: 600;
+}
+
+.cGreen{
+    color: green;
+}
+.cOrange{
+    color: orange;
+}
+.cWhite,
+.cWhite:hover{
+    color:whitesmoke
+}
+
+
+/*  HEADER SECTION  */
+
+
+
+
+/*  HERO SECTION  */
+.models{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+}
+.selectModels{
+    text-align: center;
+}
+
+@media screen and (max-width: 992px) {
+    .selectModels{
+        display: none;
+    }
+    .models{
+        display: none;
+    }
+}
+
+.modelImg{
+    height: 150px;
+    width: auto;
+    object-fit: cover;
+    opacity: 0.7;
+}
+
+
+
+
+
+/*  GALLERY SECTION  */
+
+.box{
+    background-color: pink;
+    border: 1px solid lightskyblue;
+    min-height: 50px;
+}
