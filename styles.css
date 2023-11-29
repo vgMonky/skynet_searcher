@@ -107,7 +107,15 @@ h1{
     opacity: 0.5;
     position: absolute;
     z-index: -1;
+}
 
+.modelImgActive{
+    height: 150px;
+    width: 150px;
+    object-fit: contain;
+    opacity: 0;
+    position: absolute;
+    z-index: 3;
 }
 
 
