@@ -14,19 +14,52 @@
 
 
 <body>
-    <div class="container header"></div>
+    <div class="container header">
+        <nav class="navbar navbar-expand-lg navbar-dark">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="#">
+                    <img src="/img/background.png" alt="" width="30" height="30" class="d-inline-block align-text-top">
+                    SKYGPU.NET
+                </a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0  ">
+                  <li class="nav-item">
+                    <a class="nav-link active" aria-current="page" href="#">Home</a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link" href="#">Generator</a>
+                  </li>
+                  <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                      Suport
+                    </a>
+                    <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                      <li><a class="dropdown-item" href="#">Contact</a></li>
+                      <li><a class="dropdown-item" href="#">Github</a></li>
+                      <li><hr class="dropdown-divider"></li>
+                      <li><a class="dropdown-item" href="#">Donate $</a></li>
+                    </ul>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </nav>
+    </div>
 
 
 
 
 
-    <br><br><br><br><br>
+    <br><br><br>
     
     <div class="container hero">
         <div class="row g-5">
             <div class="col col-12 col-lg-6">
                 <div class="row gy-1 ">
-                    <h1 class="col col-12">HELP<br>SKYNET<br>EXPRESS.</h1>
+                    <h1 class="col col-12">TRY<br>SKYNET<br>EXPRESS.</h1>
                     <p class="col col-12">BECOME PART OF OUR COMMUNITY BY <span class="cGreen">GENERATING</span><br>
                          UNCENSORED PROMPT-BASED IMAGES  <span class="cOrange">FOR FREE.</span></p>
                          <br><br><br><br><br><br><br><br>
@@ -43,7 +76,7 @@
             <div class="col col-12 col-lg-1"></div>
 
             <div class="col">
-                <p class="col col-12 modelsTitle">CHOOSE MODEL ALGORITHM</p>
+                <p class="col col-12 modelsTitle">CHOOSE MODEL ALGORITHM:</p>
                 <div class="col col-12 models">
                     <div class="model" id="model1"><img src="/img/stable.png" class="modelImgActive"><img src="img/Frame 118.png" class="modelImg"><div class="modelText">Stable Xl</div></div>
                     <div class="model" id="model2"><img src="/img/midj.png" class="modelImgActive"><img src="img/Frame 118.png" class="modelImg"><div class="modelText">MidJourney</div></div>
@@ -57,14 +90,14 @@
        </div>
     </div>
 
-    <br><br><br><br><br><br><br><br>
+    <br><br><br><br>
 
 
 
 
     <div class="container gallery">
         <p class="cOrange">Images created by our community :)</p>
-        <div class="row g-1" id="landingGallery">
+        <div class="row " id="landingGallery">
         </div>
     </div>
 

@@ -1,4 +1,5 @@
-/* algorithm selector */
+
+////* MODEL SELECTOR *////
 function modelSelector(model){
     const a = document.getElementById(model);
     const i = a.firstChild
@@ -41,67 +42,137 @@ modelSelector("model3")
 modelSelector("model4")
 modelSelector("model5")
 modelSelector("model6")
-/* algorithm selector END */
+/*  MODEL SELECTOR END */
 
 
 
 
 
 
+////* GALLERY SERCHER *////
 
 
-/*function to show img in landingGallery */
+/*function to add img in LANDING GALLERY */
 function searchedImg(src){
     const landingGallery = document.getElementById("landingGallery")
 
     var img = document.createElement("img");
-    img.src = src
-    img.id = "imgSerch"
-    img.className = "col col-6 col-md-4 col-lg-3 col-xl-2"
-    
+    img.src = src;
+
+    img.alt = img.src
+    img.id = "imgSerch";
+    img.className = "col col-4 col-md-3 col-xl-2";
+    img.style.padding = "5px";
+    img.style.borderRadius= "10px";
+
     landingGallery.appendChild(img);
 }
 
+/*function to check if img is png*/
+function isPngImage(src, timeout = 1000) { // Default timeout of 1000 milliseconds
+  return new Promise((resolve, reject) => {
+      const controller = new AbortController();
+      const signal = controller.signal;
 
+      // Set a timeout to abort the fetch
+      const timeoutId = setTimeout(() => controller.abort(), timeout);
 
-let inputSerch = "hd"
+      fetch(src, { signal })
+          .then(response => {
+              clearTimeout(timeoutId); // Clear the timeout
+              if (!response.ok) throw new Error('Network response was not ok.');
+              return response.blob();
+          })
+          .then(blob => {
+              const reader = new FileReader();
+              reader.onloadend = function() {
+                  const arr = new Uint8Array(reader.result.slice(0, 8));
+                  const pngHeader = [137, 80, 78, 71, 13, 10, 26, 10];
+                  const isPng = arr.length === pngHeader.length && arr.every((value, index) => value === pngHeader[index]);
+                  resolve(isPng);
+              };
+              reader.readAsArrayBuffer(blob);
+          })
+          .catch(error => {
+              if (error.name === 'AbortError') {
+                  console.error('Fetch aborted due to timeout:', src);
+                  resolve(false); // Resolve with false if the request was aborted
+              } else {
+                  console.error('Fetch error:', error);
+                  resolve(false); // Resolve with false instead of rejecting to continue processing
+              }
+          });
+  });
+}
 
-/*catch data from skygpu serch api*/
+/*set Search input by user*/
+let inputSearch = "pixel";
+
+/*catch and process data from skygpu search api*/
 const apiUrl = 'https://testnet.skygpu.net/v2/skynet/search';
 
 const requestData = {
-  prompt: inputSerch,
-  size: 40,
+  prompt: inputSearch,
+  size: 200,
 };
 
 fetch(apiUrl, {
   method: 'POST',
   headers: {
-    'Accept': 'application/json',
-    'Content-Type': 'application/json',
+      'Accept': 'application/json',
+      'Content-Type': 'application/json',
   },
   body: JSON.stringify(requestData),
 })
-  .then(response => response.json())
-  .then(data => {
-    console.log(data);
+.then(response => response.json())
+.then(data => {
+  console.log(data);
 
-    let count = data.length;
-    for (let i = 0; i < count; i++) {
+  async function updateData() {
+    const ipfsLink = "https://ipfs.skygpu.net/ipfs/";
+    const batchSize = 60; // Number of links to process concurrently
 
-        /* add direct image url as .ipfs_urlImg to each object */
-        const ipfsLink = "https://ipfs.skygpu.net/ipfs/";
-        data[i].ipfs_urlImg = ipfsLink + data[i].ipfs_hash + "/image.png";
-
-        /* encode and add url as .encodedUrl */
-        data[i].encodedUrl = encodeURIComponent(data[i].ipfs_urlImg);
-        /* create and add thumbor 150x150 version as .thumborUrl150 */
-        data[i].thumborUrl150 = `https://thumbor.skygpu.net/unsafe/150x150/${data[i].encodedUrl}`
-        
-        /* show thumborUrl150 images in landing gallery */
-        searchedImg(data[i].thumborUrl150)
-
-
+    for (let i = 0; i < data.length; i += batchSize) {
+        const batch = data.slice(i, i + batchSize); // Get a batch of links
+        const promises = batch.map(async (item, index) => {
+          return new Promise(async (resolve) => { // Wrapping the promise
+              let url = ipfsLink + item.ipfs_hash;
+              let isImagePng;
+      
+              try {
+                  isImagePng = await isPngImage(url); 
+      
+                  if (!isImagePng) {
+                      isImagePng = await isPngImage(url + '/image.png');
+                      if (isImagePng) {
+                          url += '/image.png';
+                      }
+                  }
+      
+                  if (!isImagePng) {
+                      console.error(`Image at index ${i + index} not found or not a PNG.`);
+                      resolve(null); // Resolve with null for skipped items
+                      return;
+                  }
+      
+                  item.ipfs_urlImg = url;
+                  item.encodedUrl = encodeURIComponent(url);
+                  item.thumborUrl150 = `https://thumbor.skygpu.net/unsafe/150x150/${item.encodedUrl}`;
+                  searchedImg(item.thumborUrl150);
+                  console.log(`${i + index} ${item.thumborUrl150} was added`);
+                  resolve(item); // Resolve with the item
+              } catch (error) {
+                  console.error(`Error processing image at index ${i + index}:`, error);
+                  resolve(null); // Resolve with null in case of error
+              }
+          });
+      });
+      
+      await Promise.all(promises);
     }
-  })
-  .catch(error => console.error('Error:', error));
+    console.log(data);
+}
+  updateData();
+
+})
+.catch(error => console.error('Error:', error));
