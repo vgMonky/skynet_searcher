@@ -1,19 +1,36 @@
 
 ////* LOADING *////
 
-/*function to*/
+/* Function to simulate a loading screen */
+let loading_screen = document.querySelector(".loading_screen");
+let landing = document.querySelector(".landing");
+let amount = document.querySelector(".loading_amount");
 
+landing.style.display = "none";
 
+let porcent = 0;
+let duration = 3000; // total duration of the loading in milliseconds
+let interval = 100; // how often to update the percentage
 
+let intervalId = setInterval(() => {
+    porcent += (interval / duration) * 100; // increment percentage
 
+    // Update the loading amount text
+    amount.textContent = porcent.toFixed(0);
 
+    if (porcent >= 100) {
+        clearInterval(intervalId); // clear the interval
+ 
+        landing.style.display = 'block'; // Show the landing immediately
 
+        loading_screen.style.opacity = '0'; // Start fading out
 
-
-
-
-
-
+        // Listen for the end of the transition
+        loading_screen.addEventListener('transitionend', () => {
+            loading_screen.style.display = 'none';
+        }, { once: true }); // Use { once: true } so the listener is removed after it runs
+    }
+}, interval);
 
 
 
