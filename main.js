@@ -13,7 +13,7 @@ let duration = 3000; // total duration of the loading in milliseconds
 let interval = 100; // how often to update the percentage
 
 let intervalId = setInterval(() => {
-    porcent += (interval / duration) * 100; // increment percentage
+    porcent += (interval / duration) * (100 - duration/1000) ; // increment percentage
 
     // Update the loading amount text
     amount.textContent = porcent.toFixed(0);
@@ -74,14 +74,14 @@ function modelSelector(model){
         false,
     );
 }
-
 modelSelector("model1")
 modelSelector("model2")
 modelSelector("model3")
 modelSelector("model4")
 modelSelector("model5")
 modelSelector("model6")
-/*  MODEL SELECTOR END */
+
+
 
 
 
@@ -89,7 +89,6 @@ modelSelector("model6")
 
 
 ////* GALLERY *////
-
 
 /*set Search input by user    default:"pixel"*/
 let keyword = "pixel";
@@ -215,6 +214,8 @@ function searchedImg(src, prompt){
 
     var imgCard = document.createElement("div");
     imgCard.className ="col col-4 col-md-3 col-xl-2 gallery_card ";
+    
+
 
     var img = document.createElement("img");
     img.src = src;
@@ -223,10 +224,29 @@ function searchedImg(src, prompt){
     var prmt = document.createElement("p");
     prmt.textContent = prompt;
     prmt.className = "img_prpmt";
+    
 
 
     landingGallery.appendChild(imgCard);
     imgCard.appendChild(img);
     imgCard.appendChild(prmt);
+
+
+
+    /*Promt interaction */
+    imgCard.addEventListener("mouseover",(event) => {
+        prmt.style.display = "flex";
+    }, false,);
+
+    imgCard.addEventListener("mouseout" ,(event) => {
+        prmt.style.display = "none";
+    },false,);
+
+
+    /* Img and Info interaction */
+    imgCard.addEventListener("click",(event) => {
+        
+    },false,);
 }
+
 
