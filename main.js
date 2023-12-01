@@ -1,5 +1,27 @@
 
-////* MODEL SELECTOR *////
+////* LOADING *////
+
+/*function to*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+////* HERO *////
+
+/*function to add img in LANDING GALLERY */
 function modelSelector(model){
     const a = document.getElementById(model);
     const i = a.firstChild
@@ -49,7 +71,7 @@ modelSelector("model6")
 
 
 
-////* GALLERY SERCHER *////
+////* GALLERY *////
 
 
 /*function to add img in LANDING GALLERY */
@@ -59,11 +81,8 @@ function searchedImg(src){
     var img = document.createElement("img");
     img.src = src;
 
-    img.alt = img.src
     img.id = "imgSerch";
-    img.className = "col col-4 col-md-3 col-xl-2";
-    img.style.padding = "5px";
-    img.style.borderRadius= "10px";
+    img.className = "col col-4 col-md-3 col-xl-2 landing_img ";
 
     landingGallery.appendChild(img);
 }
@@ -130,7 +149,7 @@ fetch(apiUrl, {
 
   async function updateData() {
     const ipfsLink = "https://ipfs.skygpu.net/ipfs/";
-    const batchSize = 60; // Number of links to process concurrently
+    const batchSize = 100; // Number of links to process concurrently
 
     for (let i = 0; i < data.length; i += batchSize) {
         const batch = data.slice(i, i + batchSize); // Get a batch of links

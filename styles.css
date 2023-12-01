@@ -6,8 +6,9 @@
 
 :root {
     --Black: black;
+    --Gray: rgb(54, 54, 54);
     --White: whitesmoke;
-    --Orange: orange;
+    --Orange: rgb(228, 138, 3);
     --Green: rgb(21, 173, 21);
 }
 
@@ -61,22 +62,52 @@ h1{
 }
 
 
+
+/*  LOADER SECTION  */
+
+.loader{
+    background-color: var(--Black);
+    display: block;
+    height: 100vh;
+    width: 100vw;
+    z-index: 10;
+}
+.loading_group{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+
+
+
 /*  HEADER SECTION  */
 
+.navbar-nav li{
+    margin-left: 40px;
+}
 
 
 
-/*  Select Models SECTION  */
+
+/*  HERO SECTION  */
+
+
+/*  Select Models  */
 
 .models{
     max-width: 500px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
+    justify-content: right;
     gap: 30px;
 }
 .modelsTitle{
-    text-align: center;
+    text-align: right;
+    position: relative;
+    right: 10px;
 }
 
 @media screen and (max-width: 992px) {
@@ -124,6 +155,10 @@ h1{
 
 
 /*  GALLERY SECTION  */
+.landing_img{
+    padding: 5px;
+    border-radius: 10px;
+}
 
 .box{
     background-color: pink;
