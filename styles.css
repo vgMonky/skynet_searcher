@@ -155,9 +155,12 @@ h1{
 
 
 /*  GALLERY SECTION  */
-.landing_img{
+.gallery_card{
     padding: 5px;
     border-radius: 10px;
+}
+.gallery_img{
+    object-fit: contain;
 }
 
 .box{
