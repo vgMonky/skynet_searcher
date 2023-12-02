@@ -60,9 +60,7 @@ function modelSelector(model){
         false,
     );
 
-    a.addEventListener(
-        "click",
-        (event) => {
+    a.addEventListener("click",(event) => {
             all[0].style.border= "none";
             all[1].style.border= "none";
             all[2].style.border= "none";
@@ -70,8 +68,7 @@ function modelSelector(model){
             all[4].style.border= "none";
             all[5].style.border= "none";
             a.style.border= "2px solid var(--Orange)"
-        },
-        false,
+        },false,
     );
 }
 modelSelector("model1")
@@ -84,6 +81,21 @@ modelSelector("model6")
 
 
 
+////* SERCHER INPUT *////
+
+let txt_input = document.getElementById("txt_input")
+
+let btn_search = document.getElementById("search")
+let btn_generate = document.getElementById("generate")
+console.log(search.value)
+
+btn_search.addEventListener(
+    "click",
+    (event)=>{
+        
+    },false
+)
+
 
 
 
@@ -91,7 +103,7 @@ modelSelector("model6")
 ////* GALLERY *////
 
 /*set Search input by user    default:"pixel"*/
-let keyword = "pixel";
+let keyword = "none";
 
 /*catch data from skygpu search api*/
 const apiUrl = 'https://testnet.skygpu.net/v2/skynet/search';
@@ -170,6 +182,11 @@ async function updateData() {
 
 
 
+
+
+
+
+
 /*function to check if img is png*/
 function isPngImage(src, timeout = 3000) { // Default timeout of 1000 milliseconds
     return new Promise((resolve, reject) => {
@@ -206,6 +223,11 @@ function isPngImage(src, timeout = 3000) { // Default timeout of 1000 millisecon
             });
     });
   }
+
+  
+
+
+
 
 
 /*function to add img in LANDING GALLERY */
