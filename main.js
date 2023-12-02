@@ -171,7 +171,7 @@ async function updateData() {
 
 
 /*function to check if img is png*/
-function isPngImage(src, timeout = 1000) { // Default timeout of 1000 milliseconds
+function isPngImage(src, timeout = 3000) { // Default timeout of 1000 milliseconds
     return new Promise((resolve, reject) => {
         const controller = new AbortController();
         const signal = controller.signal;
