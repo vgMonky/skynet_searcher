@@ -1,7 +1,8 @@
 
 ////* LOADING *////
 
-/* Function to simulate a loading screen */
+/* Function to simulate a loading screen 
+
 let loading_screen = document.querySelector(".loading_screen");
 let landing = document.querySelector(".landing");
 let amount = document.querySelector(".loading_amount");
@@ -32,7 +33,7 @@ let intervalId = setInterval(() => {
     }
 }, interval);
 
-
+*/
 
 
 
@@ -87,7 +88,6 @@ let txt_input = document.getElementById("txt_input")
 
 let btn_search = document.getElementById("search")
 let btn_generate = document.getElementById("generate")
-console.log(search.value)
 
 btn_search.addEventListener(
     "click",
@@ -102,136 +102,127 @@ btn_search.addEventListener(
 
 ////* GALLERY *////
 
-/*set Search input by user    default:"pixel"*/
-let keyword = "none";
+/*set Search input by user*/
+let keyword = "pixel";
 
-/*catch data from skygpu search api*/
-const apiUrl = 'https://testnet.skygpu.net/v2/skynet/search';
+/*catch data*/
+catchData(keyword)
+    .then(data => {
+        console.log(data)
 
-const requestData = {
-  prompt: keyword,
-  size: 200,
-};
+        processData(data)
+    })
 
-fetch(apiUrl, {
-  method: 'POST',
-  headers: {
-      'Accept': 'application/json',
-      'Content-Type': 'application/json',
-  },
-  body: JSON.stringify(requestData),
-})
-.then(response => response.json())
-.then(data => {
-  console.log(data);
+    .catch(error => {
+        console.error(`catchData(${keyword}) ERROR!`)
+        console.log(error)
+    });
 
 
-/*function to process and update data raw img links, and finaly create divs with the succsesfull ones */
-async function updateData() {
-    const ipfsLink = "https://ipfs.skygpu.net/ipfs/";
-    const batchSize = 100; // Number of links to process concurrently
 
-    for (let i = 0; i < data.length; i += batchSize) {
-        const batch = data.slice(i, i + batchSize); // Get a batch of links
-        const promises = batch.map(async (item, index) => {
-          return new Promise(async (resolve) => { // Wrapping the promise
-              let url = ipfsLink + item.ipfs_hash;
-              let isImagePng;
+
+
+
+
+
+/*async Func. to catch data*/ 
+async function catchData(keyword){
+
+    const apiUrl = 'https://testnet.skygpu.net/v2/skynet/search';
+    const requestData = {prompt: keyword, size: 200};
+
+    const response = await fetch(apiUrl, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
+      })
       
-              try {
-                  isImagePng = await isPngImage(url); 
-      
-                  if (!isImagePng) {
-                      isImagePng = await isPngImage(url + '/image.png');
-                      if (isImagePng) {
-                          url += '/image.png';
-                      }
-                  }
-      
-                  if (!isImagePng) {
-                      /*console.error(`Image at index ${i + index} not found or not a PNG.`); */
-                      resolve(null); // Resolve with null for skipped items
-                      return;
-                  }
-      
-                  item.ipfs_urlImg = url;
-                  item.encodedUrl = encodeURIComponent(url);
-                  item.thumborUrl150 = `https://thumbor.skygpu.net/unsafe/150x150/${item.encodedUrl}`;
+    const data = await response.json()
+    return data;
+}
 
 
-                  /*create Div's with data*/
-                  searchedImg(item.thumborUrl150, data[index].params.prompt);
-                  /*console.log(`${i + index} ${item.thumborUrl150} was added`); */
-                  resolve(item); // Resolve with the item
-              } catch (error) {
-                  /*console.error(`Error processing image at index ${i + index}:`, error);*/
-                  resolve(null); // Resolve with null in case of error
-              }
-          });
-      });
-      
-      await Promise.all(promises);
+async function processData(data){
+    const chunkSize = 1; // Number of items to process in parallel
+    for (let i = 0; i < data.length; i += chunkSize) {
+        const chunk = data.slice(i, i + chunkSize);
+        const promises = chunk.map(item => processItem(item));
+        await Promise.all(promises);
     }
 }
-  updateData();
 
-})
-
-.catch(error => console.error('Error:', error));
-
-
-
+async function processItem(item) {
+    await rawImg(item);
+    thumbor150(item);
+    publicDiv(item);
+}
 
 
+/*Func. to create raw img link, and check PNG Validation*/ 
+async function rawImg(data) {
+    const ipfsLink = "https://ipfs.skygpu.net/ipfs/";
+    data.rawLink = ipfsLink + data.ipfs_hash;
 
+    // Timeout function
+    const timeout = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
+    try {
+        // Promise race between fetch and a 3-second timeout
+        const responsePromise = fetch(data.rawLink);
+        const winner = await Promise.race([responsePromise, timeout(1000)]);
 
+        if (winner instanceof Response) {
+            // If fetch wins the race
+            const reader = winner.body.getReader();
+            const { value: chunk } = await reader.read(); // Read the first chunk
 
-/*function to check if img is png*/
-function isPngImage(src, timeout = 3000) { // Default timeout of 1000 milliseconds
-    return new Promise((resolve, reject) => {
-        const controller = new AbortController();
-        const signal = controller.signal;
-  
-        // Set a timeout to abort the fetch
-        const timeoutId = setTimeout(() => controller.abort(), timeout);
-  
-        fetch(src, { signal })
-            .then(response => {
-                clearTimeout(timeoutId); // Clear the timeout
-                if (!response.ok) throw new Error('Network response was not ok.');
-                return response.blob();
-            })
-            .then(blob => {
-                const reader = new FileReader();
-                reader.onloadend = function() {
-                    const arr = new Uint8Array(reader.result.slice(0, 8));
-                    const pngHeader = [137, 80, 78, 71, 13, 10, 26, 10];
-                    const isPng = arr.length === pngHeader.length && arr.every((value, index) => value === pngHeader[index]);
-                    resolve(isPng);
-                };
-                reader.readAsArrayBuffer(blob);
-            })
-            .catch(error => {
-                if (error.name === 'AbortError') {
-                   /* console.error('Fetch aborted due to timeout:', src); */
-                    resolve(false); // Resolve with false if the request was aborted
-                } else {
-                    console.error('Fetch error:', error);
-                    resolve(false); // Resolve with false instead of rejecting to continue processing
+            // Convert Uint8Array to hex string
+            const hexString = chunk.subarray(0, 8).reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
+
+            // PNG signature
+            const pngSignature = '89504e470d0a1a0a';
+
+            if (hexString !== pngSignature) {
+                // Append `/image.png` and check again
+                data.rawLink += `/image.png`;
+                const response2 = await fetch(data.rawLink);
+                const reader2 = response2.body.getReader();
+                const { value: chunk2 } = await reader2.read();
+
+                const hexString2 = chunk2.subarray(0, 8).reduce((str, byte) => str + byte.toString(16).padStart(2, '0'), '');
+
+                if (hexString2 !== pngSignature) {
+                    data.rawLink = undefined;
                 }
-            });
-    });
-  }
+            }
+        } else {
+            // If timeout wins the race
+            console.error('Fetch operation timed out.');
+            data.rawLink = undefined;
+        }
+    } catch (error) {
+        console.error('Error fetching image:', error);
+        data.rawLink = undefined;
+    }
+    console.log(data)
+}
 
-  
-
-
-
+/*function to add img in LANDING GALLERY */
+function thumbor150(data){
+    let encodedUrl =  encodeURIComponent(data.rawLink);
+    data.thumbor150 = `https://thumbor.skygpu.net/unsafe/150x150/${encodedUrl}`;
+}
 
 
 /*function to add img in LANDING GALLERY */
-function searchedImg(src, prompt){
+function publicDiv(data){
+
+    if (data.thumbor150 === "https://thumbor.skygpu.net/unsafe/150x150/undefined"){
+        data.thumbor150 = "/img/background.png"
+    }
     const landingGallery = document.getElementById("landingGallery")
 
     var imgCard = document.createElement("div");
@@ -240,11 +231,11 @@ function searchedImg(src, prompt){
 
 
     var img = document.createElement("img");
-    img.src = src;
+    img.src = data.thumbor150;
     img.className = "col col-12 gallery_img ";
 
     var prmt = document.createElement("p");
-    prmt.textContent = prompt;
+    prmt.textContent = data.params.prompt;
     prmt.className = "img_prpmt";
     
 
@@ -269,6 +260,5 @@ function searchedImg(src, prompt){
     imgCard.addEventListener("click",(event) => {
         
     },false,);
+    
 }
-
-
