@@ -1,7 +1,7 @@
 
 ////* LOADING *////
 
-/* Function to simulate a loading screen 
+/* Function to simulate a loading screen */
 
 let loading_screen = document.querySelector(".loading_screen");
 let landing = document.querySelector(".landing");
@@ -33,7 +33,7 @@ let intervalId = setInterval(() => {
     }
 }, interval);
 
-*/
+
 
 
 
@@ -102,8 +102,7 @@ btn_search.addEventListener(
 
 ////* GALLERY *////
 
-/*set Search input by user*/
-let keyword = "pixel";
+let keyword = "";
 
 /*catch data*/
 catchData(keyword)
@@ -144,16 +143,16 @@ async function catchData(keyword){
     return data;
 }
 
-
+/*Func. to process data in paralel mode*/ 
 async function processData(data){
-    const chunkSize = 1; // Number of items to process in parallel
+    const chunkSize = 5; // Number of items to process in parallel
     for (let i = 0; i < data.length; i += chunkSize) {
         const chunk = data.slice(i, i + chunkSize);
         const promises = chunk.map(item => processItem(item));
         await Promise.all(promises);
     }
 }
-
+/*Func. to process data Objects*/ 
 async function processItem(item) {
     await rawImg(item);
     thumbor150(item);
@@ -172,7 +171,7 @@ async function rawImg(data) {
     try {
         // Promise race between fetch and a 3-second timeout
         const responsePromise = fetch(data.rawLink);
-        const winner = await Promise.race([responsePromise, timeout(1000)]);
+        const winner = await Promise.race([responsePromise, timeout(3000)]);
 
         if (winner instanceof Response) {
             // If fetch wins the race
@@ -207,7 +206,7 @@ async function rawImg(data) {
         console.error('Error fetching image:', error);
         data.rawLink = undefined;
     }
-    console.log(data)
+
 }
 
 /*function to add img in LANDING GALLERY */
