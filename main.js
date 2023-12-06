@@ -84,17 +84,35 @@ modelSelector("model6")
 
 ////* SERCHER INPUT *////
 
+keyword = ""
+
 let txt_input = document.getElementById("txt_input")
 
 let btn_search = document.getElementById("search")
 let btn_generate = document.getElementById("generate")
 
-btn_search.addEventListener(
-    "click",
-    (event)=>{
-        
-    },false
-)
+btn_search.addEventListener('click', function() {
+    keyword = txt_input.value;
+    console.log(`searching for ${txt_input.value}`);
+
+    /*remove all gallery divs*/
+    const landingGallery = document.getElementById("landingGallery");
+    while (landingGallery.firstChild) {
+        landingGallery.removeChild(landingGallery.firstChild);
+      }
+
+    /*catch data and create new divs*/
+    catchData(keyword)
+    .then(data => {
+        console.log(data)
+        processData(data)
+    })
+    .catch(error => {
+        console.log(error)
+    });
+
+
+});
 
 
 
@@ -102,22 +120,15 @@ btn_search.addEventListener(
 
 ////* GALLERY *////
 
-let keyword = "";
-
 /*catch data*/
 catchData(keyword)
     .then(data => {
         console.log(data)
-
         processData(data)
     })
-
     .catch(error => {
-        console.error(`catchData(${keyword}) ERROR!`)
         console.log(error)
     });
-
-
 
 
 
@@ -171,7 +182,7 @@ async function rawImg(data) {
     try {
         // Promise race between fetch and a 3-second timeout
         const responsePromise = fetch(data.rawLink);
-        const winner = await Promise.race([responsePromise, timeout(3000)]);
+        const winner = await Promise.race([responsePromise, timeout(2000)]);
 
         if (winner instanceof Response) {
             // If fetch wins the race
@@ -224,11 +235,11 @@ function publicDiv(data){
     }
     const landingGallery = document.getElementById("landingGallery")
 
+
+    /* img card Div's */
     var imgCard = document.createElement("div");
     imgCard.className ="col col-4 col-md-3 col-xl-2 gallery_card ";
     
-
-
     var img = document.createElement("img");
     img.src = data.thumbor150;
     img.className = "col col-12 gallery_img ";
@@ -236,12 +247,47 @@ function publicDiv(data){
     var prmt = document.createElement("p");
     prmt.textContent = data.params.prompt;
     prmt.className = "img_prpmt";
-    
-
 
     landingGallery.appendChild(imgCard);
     imgCard.appendChild(img);
     imgCard.appendChild(prmt);
+
+
+
+    /*info card Div */
+    var screenContainer = document.createElement("div");
+    screenContainer.className ="screen_container";
+
+
+    var infoCard = document.createElement("div");
+    infoCard.className ="col col-12 col-md-8 info_card ";
+
+    var imgxl = document.createElement("img");
+    imgxl.className = "img_xl"
+    imgxl.src = data.rawLink;
+
+    var info = document.createElement("p");
+    info.className = "info"
+    for (var key in data.params) {
+        if (data.params.hasOwnProperty(key) && key !== "strength") {
+            // Create a span element for each key, excluding 'strength'
+            var keySpan = document.createElement("span");
+            keySpan.innerHTML = "<strong>" + key + "</strong>: " + data.params[key];
+    
+            // Append the key-value pair to the info paragraph
+            info.appendChild(keySpan);
+    
+            // Add a line break after each key-value pair
+            info.appendChild(document.createElement("br"));
+        }
+    }
+
+
+    landingGallery.appendChild(screenContainer);
+    screenContainer.appendChild(infoCard);
+    infoCard.appendChild(imgxl);
+    infoCard.appendChild(info);
+
 
 
 
@@ -256,8 +302,17 @@ function publicDiv(data){
 
 
     /* Img and Info interaction */
-    imgCard.addEventListener("click",(event) => {
-        
+    img.addEventListener("click",(event) => {
+        event.stopPropagation();
+        screenContainer.style.display = "flex";
     },false,);
+
+    infoCard.addEventListener("click",(event) => {
+        event.stopPropagation();
+    },false,);
+    screenContainer.addEventListener("click", (event) => {
+            screenContainer.style.display = "none";
+    }, false);
+
     
 }
