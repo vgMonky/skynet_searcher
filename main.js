@@ -84,35 +84,38 @@ modelSelector("model6")
 
 ////* SERCHER INPUT *////
 
-keyword = ""
+// Call this function on window load
+window.onload = retrieveKeywordAndSearch;
+
+// Function to retrieve the keyword after page load and call searchGallery
+function retrieveKeywordAndSearch() {
+    let savedKeyword = localStorage.getItem('keyword');
+    if (savedKeyword) {
+        console.log(`Retrieved keyword: ${savedKeyword}`);
+
+        if (savedKeyword === "false") { // Check if the keyword is the string "false"
+            searchGallery("");
+        } else {
+            searchGallery(savedKeyword);
+            localStorage.setItem('keyword', "false");
+        }
+    }
+}
+
 
 let txt_input = document.getElementById("txt_input")
-
 let btn_search = document.getElementById("search")
 let btn_generate = document.getElementById("generate")
 
 btn_search.addEventListener('click', function() {
-    keyword = txt_input.value;
-    console.log(`searching for ${txt_input.value}`);
+    let keyword = txt_input.value;
 
-    /*remove all gallery divs*/
-    const landingGallery = document.getElementById("landingGallery");
-    while (landingGallery.firstChild) {
-        landingGallery.removeChild(landingGallery.firstChild);
-      }
-
-    /*catch data and create new divs*/
-    catchData(keyword)
-    .then(data => {
-        console.log(data)
-        processData(data)
-    })
-    .catch(error => {
-        console.log(error)
-    });
-
-
+    // Store the keyword in localStorage and reload the page
+    localStorage.setItem('keyword', keyword);
+    location.reload();
 });
+
+
 
 
 
@@ -120,22 +123,20 @@ btn_search.addEventListener('click', function() {
 
 ////* GALLERY *////
 
-/*catch data*/
-catchData(keyword)
-    .then(data => {
-        console.log(data)
-        processData(data)
-    })
-    .catch(error => {
-        console.log(error)
-    });
+/*00. Global Func to search data and display on gallery*/
+function searchGallery(keyword){
+    catchData(keyword)
+        .then(data => {
+            console.log(data)
+            processData(data)
+        })
+        .catch(error => {
+            console.log(error)
+        });
+}
 
 
-
-
-
-
-/*async Func. to catch data*/ 
+/*01.A async Func. to catch data*/ 
 async function catchData(keyword){
 
     const apiUrl = 'https://testnet.skygpu.net/v2/skynet/search';
@@ -153,8 +154,7 @@ async function catchData(keyword){
     const data = await response.json()
     return data;
 }
-
-/*Func. to process data in paralel mode*/ 
+/*01.B Func. to divide data and proces in paralel mode*/ 
 async function processData(data){
     const chunkSize = 5; // Number of items to process in parallel
     for (let i = 0; i < data.length; i += chunkSize) {
@@ -163,15 +163,15 @@ async function processData(data){
         await Promise.all(promises);
     }
 }
-/*Func. to process data Objects*/ 
+
+/*02. Func. to process data Objects*/ 
 async function processItem(item) {
     await rawImg(item);
     thumbor150(item);
     publicDiv(item);
 }
 
-
-/*Func. to create raw img link, and check PNG Validation*/ 
+/*03.A Func. to create raw img link, and check PNG Validation*/ 
 async function rawImg(data) {
     const ipfsLink = "https://ipfs.skygpu.net/ipfs/";
     data.rawLink = ipfsLink + data.ipfs_hash;
@@ -219,15 +219,12 @@ async function rawImg(data) {
     }
 
 }
-
-/*function to add img in LANDING GALLERY */
+/*03.B function to add img in LANDING GALLERY */
 function thumbor150(data){
     let encodedUrl =  encodeURIComponent(data.rawLink);
     data.thumbor150 = `https://thumbor.skygpu.net/unsafe/150x150/${encodedUrl}`;
 }
-
-
-/*function to add img in LANDING GALLERY */
+/*03.C function to add img in LANDING GALLERY */
 function publicDiv(data){
 
     if (data.thumbor150 === "https://thumbor.skygpu.net/unsafe/150x150/undefined"){
