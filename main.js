@@ -93,13 +93,16 @@ function retrieveKeywordAndSearch() {
     if (savedKeyword) {
         console.log(`Retrieved keyword: ${savedKeyword}`);
 
-        if (savedKeyword === "false") { // Check if the keyword is the string "false"
+        if (savedKeyword === "false" ) { // Check if the keyword is the string "false"
             searchGallery("");
+            localStorage.setItem('keyword', false);
         } else {
             searchGallery(savedKeyword);
-            localStorage.setItem('keyword', "false");
+            localStorage.setItem('keyword', false);
         }
-    }
+    }else {
+        searchGallery("");
+        localStorage.setItem('keyword', false);}
 }
 
 
@@ -108,7 +111,9 @@ let btn_search = document.getElementById("search")
 let btn_generate = document.getElementById("generate")
 
 btn_search.addEventListener('click', function() {
+
     let keyword = txt_input.value;
+
 
     // Store the keyword in localStorage and reload the page
     localStorage.setItem('keyword', keyword);

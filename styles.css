@@ -34,7 +34,7 @@ h1{
     opacity: 1;
 
     /* Transition for opacity change */
-    transition: opacity 3s ease-out;
+    transition: opacity 2s ease-out;
 
     position: absolute; /* Absolute positioning to overlay */
     top: 0;
