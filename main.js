@@ -110,19 +110,24 @@ let txt_input = document.getElementById("txt_input")
 let btn_search = document.getElementById("search")
 let btn_generate = document.getElementById("generate")
 
+// Event listener for the search button (remains unchanged)
 btn_search.addEventListener('click', function() {
+    storeKeywordAndReload();
+});
+// Event listener for pressing Enter key in the text input field
+txt_input.addEventListener('keydown', function(event) {
+    if (event.keyCode === 13) { // 13 is the key code for Enter key
+        event.preventDefault(); // Prevent the default action (inserting a newline)
+        storeKeywordAndReload();
+    }
+});
 
+function storeKeywordAndReload() {
     let keyword = txt_input.value;
-
-
     // Store the keyword in localStorage and reload the page
     localStorage.setItem('keyword', keyword);
     location.reload();
-});
-
-
-
-
+}
 
 
 
