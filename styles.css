@@ -25,6 +25,13 @@ h1{
     font-weight: 600;
 }
 
+@media screen and (max-width: 400px) {
+    h1{
+        font-size: 4.2rem;
+    }
+
+}
+
 
 
 /*  LOADER SECTION  */
@@ -77,6 +84,15 @@ h1{
 
 
 /*  HERO SECTION  */
+.hero{
+    margin: 100px auto 140px;
+}
+@media screen and (max-width: 990px) {
+    .hero{
+        margin: 50px auto 0px;
+    }
+}
+
 
 .btnFlex{
     display: flex;
@@ -182,6 +198,7 @@ h1{
 
 
 /*  GALLERY SECTION  */
+
 .gallery_card{
     padding: 8px;
     border-radius: 10px;

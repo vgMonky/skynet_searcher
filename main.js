@@ -68,7 +68,8 @@ function modelSelector(model){
             all[3].style.border= "none";
             all[4].style.border= "none";
             all[5].style.border= "none";
-            a.style.border= "2px solid var(--Orange)"
+            a.style.border= "2px solid var(--Orange)";
+            txt_input.value = a.textContent;
         },false,
     );
 }
@@ -133,8 +134,9 @@ function storeKeywordAndReload() {
 
 ////* GALLERY *////
 
-/*00. Global Func to search data and display on gallery*/
+/*00. Global Func to search, process and display data on gallery*/
 function searchGallery(keyword){
+    keyword = String(keyword).toLowerCase();
     catchData(keyword)
         .then(data => {
             console.log(data)
@@ -164,9 +166,9 @@ async function catchData(keyword){
     const data = await response.json()
     return data;
 }
-/*01.B Func. to divide data and proces in paralel mode*/ 
+/*01.B Func. to divide data and process in paralel*/ 
 async function processData(data){
-    const chunkSize = 5; // Number of items to process in parallel
+    const chunkSize = 1; // Number of items to process in parallel
     for (let i = 0; i < data.length; i += chunkSize) {
         const chunk = data.slice(i, i + chunkSize);
         const promises = chunk.map(item => processItem(item));
@@ -177,7 +179,7 @@ async function processData(data){
 /*02. Func. to process data Objects*/ 
 async function processItem(item) {
     await rawImg(item);
-    thumbor150(item);
+    thumbor(item);
     publicDiv(item);
 }
 
@@ -192,7 +194,7 @@ async function rawImg(data) {
     try {
         // Promise race between fetch and a 3-second timeout
         const responsePromise = fetch(data.rawLink);
-        const winner = await Promise.race([responsePromise, timeout(2000)]);
+        const winner = await Promise.race([responsePromise, timeout(6000)]);
 
         if (winner instanceof Response) {
             // If fetch wins the race
@@ -221,24 +223,32 @@ async function rawImg(data) {
         } else {
             // If timeout wins the race
             console.error('Fetch operation timed out.');
+            console.error(ipfsLink + data.ipfs_hash);
             data.rawLink = undefined;
+
         }
     } catch (error) {
         console.error('Error fetching image:', error);
+        console.error(ipfsLink + data.ipfs_hash);
         data.rawLink = undefined;
     }
 
 }
-/*03.B function to add img in LANDING GALLERY */
-function thumbor150(data){
+/*03.B function to add thumbor reziced img*/
+function thumbor(data){
     let encodedUrl =  encodeURIComponent(data.rawLink);
     data.thumbor150 = `https://thumbor.skygpu.net/unsafe/150x150/${encodedUrl}`;
+    data.thumbor500 = `https://thumbor.skygpu.net/unsafe/500x500/${encodedUrl}`;
+
 }
 /*03.C function to add img in LANDING GALLERY */
 function publicDiv(data){
 
     if (data.thumbor150 === "https://thumbor.skygpu.net/unsafe/150x150/undefined"){
         data.thumbor150 = "/img/background.png"
+    }
+    if (data.thumbor500 === "https://thumbor.skygpu.net/unsafe/500x500/undefined"){
+        data.thumbor500 = "/img/background.png"
     }
     const landingGallery = document.getElementById("landingGallery")
 
@@ -271,7 +281,7 @@ function publicDiv(data){
 
     var imgxl = document.createElement("img");
     imgxl.className = "img_xl"
-    imgxl.src = data.rawLink;
+    imgxl.src = data.thumbor500;
 
     var info = document.createElement("p");
     info.className = "info"
@@ -323,3 +333,5 @@ function publicDiv(data){
 
     
 }
+
+
