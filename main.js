@@ -95,7 +95,7 @@ function retrieveKeywordAndSearch() {
         console.log(`Retrieved keyword: ${savedKeyword}`);
 
         if (savedKeyword === "false" ) { // Check if the keyword is the string "false"
-            searchGallery("");
+            searchGallery("oil on canvas");
             localStorage.setItem('keyword', false);
         } else {
             searchGallery(savedKeyword);
@@ -168,7 +168,7 @@ async function catchData(keyword){
 }
 /*01.B Func. to divide data and process in paralel*/ 
 async function processData(data){
-    const chunkSize = 1; // Number of items to process in parallel
+    const chunkSize = 6; // Number of items to process in parallel
     for (let i = 0; i < data.length; i += chunkSize) {
         const chunk = data.slice(i, i + chunkSize);
         const promises = chunk.map(item => processItem(item));
@@ -194,7 +194,7 @@ async function rawImg(data) {
     try {
         // Promise race between fetch and a 3-second timeout
         const responsePromise = fetch(data.rawLink);
-        const winner = await Promise.race([responsePromise, timeout(6000)]);
+        const winner = await Promise.race([responsePromise, timeout(4000)]);
 
         if (winner instanceof Response) {
             // If fetch wins the race
